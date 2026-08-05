@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingVertical: 60,
+    paddingVertical: 36,
   },
   header: {
     paddingHorizontal: 20,
@@ -294,13 +294,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '600',
-    color: '#2D3748',
+    color: '#1F163D',
     textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#4A5568',
+    color: '#51466F',
     textAlign: 'center',
     lineHeight: 22,
   },
@@ -326,15 +326,16 @@ const styles = StyleSheet.create({
   },
   topicCard: {
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 16,
     paddingVertical: 20,
     paddingHorizontal: 20,
-    borderWidth: 0,
     width: (width - 70) / 2,
     alignItems: 'center',
     marginBottom: 15,
     minHeight: 80,
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(111, 98, 177, 0.16)',
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: {
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   selectedTopicCard: {
-    backgroundColor: '#B19CD9',
+    backgroundColor: '#6F62B1',
   },
   topicText: {
     fontSize: 16,
@@ -364,8 +365,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   submitButton: {
-    backgroundColor: '#D19BA3',
-    borderRadius: 25,
+    backgroundColor: '#DD7896',
+    borderRadius: 16,
     paddingVertical: 16,
     marginHorizontal: 40,
     alignItems: 'center',

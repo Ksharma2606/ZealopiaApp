@@ -427,12 +427,12 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   topOval: {
-    backgroundColor: Colors.myChat,
+    backgroundColor: '#6F62B1',
     width: screenWidth * 1.2,
     height: screenWidth * 1.2,
     borderRadius: screenWidth * 1.2,
     position: 'absolute',
-    top: -screenWidth * 0.4,
+    top: -screenWidth * 0.55,
     left: -screenWidth * 0.1,
     zIndex: 1,
   },
@@ -441,22 +441,22 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 40,
+    paddingBottom: 48,
   },
   contentContainer: {
-    paddingHorizontal: 30,
-    marginTop: 40,
+    paddingHorizontal: 24,
+    marginTop: 24,
   },
   title: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#6B7280',
+    color: '#1F163D',
     textAlign: 'center',
-    marginBottom: 70,
+    marginBottom: 40,
   },
   inputWrapper: {
     backgroundColor: 'white',
-    borderRadius: 30,
+    borderRadius: 16,
     paddingHorizontal: 20,
     paddingVertical: 4,
     marginBottom: 15,
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
   halfInputWrapper: {
     flex: 1,
     backgroundColor: 'white',
-    borderRadius: 30,
+    borderRadius: 16,
     paddingHorizontal: 20,
     shadowColor: '#000',
     shadowOffset: {
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   },
   fullInputWrapper: {
     backgroundColor: 'white',
-    borderRadius: 30,
+    borderRadius: 16,
     paddingHorizontal: 20,
     marginBottom: 15,
     shadowColor: '#000',
@@ -585,8 +585,8 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   proceedButton: {
-    backgroundColor: Colors.primary,
-    borderRadius: 30,
+    backgroundColor: '#DD7896',
+    borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 60,
     alignSelf: 'center',

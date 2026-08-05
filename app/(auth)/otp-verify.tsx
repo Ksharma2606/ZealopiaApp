@@ -268,7 +268,7 @@ export default function OTPVerifyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#9DD4A3', // Light green background matching the image
+    backgroundColor: '#1F163D',
   },
   scrollContent: {
     flexGrow: 1,
@@ -277,22 +277,22 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
     minHeight: height,
-    paddingVertical: 60,
+    paddingVertical: 40,
   },
   cloudTop: {
     position: 'absolute',
-    top: 180,
+    top: 128,
     alignSelf: 'center',
     opacity: 0.9,
   },
   mainContent: {
     flex: 1,
-    paddingHorizontal: 40,
-    paddingTop: 120,
+    paddingHorizontal: 24,
+    paddingTop: 160,
     alignItems: 'center',
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 17,
     color: 'white',
     textAlign: 'center',
     marginBottom: 8,
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   },
   otpInput: {
     backgroundColor: 'white',
-    borderRadius: 30,
+    borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 20,
     fontSize: 18,
@@ -337,8 +337,8 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   loginButton: {
-    backgroundColor: Colors.myChat, // Pink color matching the image
-    borderRadius: 30,
+    backgroundColor: '#DD7896',
+    borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 60,
     alignItems: 'center',
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   loginButtonText: {
-    color: '#333',
+    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: '600',
   },

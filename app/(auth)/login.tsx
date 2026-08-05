@@ -12,12 +12,14 @@ import {
   Image,
   Linking,
   BackHandler,
+  ActivityIndicator,
 } from 'react-native';
 import { BaseText as Text } from '@/components/ui/Base';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { signInWithGoogle, sendOTP, phoneAuthService, signInWithApple } from '@/lib/firebase/auth';
-import Colors from '@/constants/Colors';
+import { signInWithGoogle, sendOTP, phoneAuthService, signInWithApple, isAppleSignInAvailable } from '@/lib/firebase/auth';
+import CountryCodeModal from '@/components/modals/CountryCodeModal';
+import { CountryDialCode, getFlagEmoji } from '@/constants/CountryCodes';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -32,12 +34,24 @@ import { StyleSheet as RNStyleSheet } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
+// Local subscriber number length varies by country, so we accept a broad range
+// rather than a fixed digit count (the old hardcoded 10-digit India-only check).
+const MIN_PHONE_LENGTH = 4;
+const MAX_PHONE_LENGTH = 12;
+
 export default function LoginScreen() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<CountryDialCode>({
+    name: 'India',
+    iso2: 'IN',
+    dialCode: '+91',
+  });
+  const [countryModalVisible, setCountryModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
+  const [appleSignInAvailable, setAppleSignInAvailable] = useState(false);
   
   // Animation values
   const logoTranslateY = useSharedValue(100);
@@ -59,6 +73,15 @@ export default function LoginScreen() {
       }
     }, [])
   );
+
+  // Check real device/runtime support for Sign in with Apple (Platform.OS === 'ios'
+  // alone isn't enough - e.g. it's unavailable on iOS versions before 13)
+  useEffect(() => {
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+    isAppleSignInAvailable().then(setAppleSignInAvailable);
+  }, []);
 
   // Start animations when component mounts
   useEffect(() => {
@@ -93,22 +116,22 @@ export default function LoginScreen() {
     }, 300);
   }, []);
 
-  // Handle phone number input - only allow numbers and limit to 10 digits
+  // Handle phone number input - only allow numbers, limited by the selected country's max length
   const handlePhoneChange = (text: string) => {
     const numbersOnly = text.replace(/[^0-9]/g, '');
-    if (numbersOnly.length <= 10) {
+    if (numbersOnly.length <= MAX_PHONE_LENGTH) {
       setPhoneNumber(numbersOnly);
     }
   };
 
   // Handle phone number submission
   const handlePhoneSubmit = async () => {
-    if (phoneNumber.length !== 10) {
-      Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number');
+    if (phoneNumber.length < MIN_PHONE_LENGTH) {
+      Alert.alert('Invalid Phone Number', 'Please enter a valid phone number');
       return;
     }
 
-    const fullPhoneNumber = `+91${phoneNumber}`;
+    const fullPhoneNumber = `${selectedCountry.dialCode}${phoneNumber}`;
     setLoading(true);
     
     try {
@@ -212,44 +235,7 @@ export default function LoginScreen() {
     // For smooth color transition, we'll need to handle this differently
     // Since color interpolation is complex, we'll use opacity transition
     return {
-      backgroundColor: Colors.splashScreen,
-    };
-  });
-
-  // Overlay for background color transition
-  const overlayAnimatedStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      animationProgress.value,
-      [0, 0.3, 1],
-      [0, 0, 1],
-      Extrapolation.CLAMP
-    );
-
-    return {
-      opacity,
-      backgroundColor: Colors.headerFooter,
-    };
-  });
-
-  // Logo container animation (circle appearance)
-  const logoContainerAnimatedStyle = useAnimatedStyle(() => {
-    const scale = interpolate(
-      animationProgress.value,
-      [0, 0.5, 1],
-      [0, 0, 1],
-      Extrapolation.CLAMP
-    );
-    
-    const opacity = interpolate(
-      animationProgress.value,
-      [0, 0.5, 1],
-      [0, 0, 1],
-      Extrapolation.CLAMP
-    );
-
-    return {
-      transform: [{ scale }],
-      opacity,
+      backgroundColor: '#1F163D',
     };
   });
 
@@ -285,13 +271,12 @@ export default function LoginScreen() {
 
   return (
     <Animated.View style={[styles.container, containerAnimatedStyle]}>
-      {/* Background color overlay for smooth transition */}
-      <Animated.View 
-        style={[RNStyleSheet.absoluteFillObject, overlayAnimatedStyle]} 
-        pointerEvents="none"
+      <Image
+        source={require('@/assets/login-1.1/May 22, 2026, 03_22_20 AM 1.png')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
       />
-      
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -70}
@@ -300,59 +285,65 @@ export default function LoginScreen() {
           <View style={styles.content}>
             {/* Logo Section - Initially centered, then moves to top */}
             <View style={styles.logoSection}>
-              {/* Logo container with both circle and image */}
-              <View style={styles.logoWrapper}>
-                {/* White circle background - appears during transition */}
-                <Animated.View style={[styles.logoContainer, logoContainerAnimatedStyle]} />
-                
-                {/* Logo image - visible from the start */}
-                <Animated.Image 
-                  source={require('@/assets/images/logo.png')} 
-                  style={[styles.logo, logoImageAnimatedStyle]} 
-                />
-              </View>
-              
-              <Animated.Text style={[styles.appName, titleAnimatedStyle]}>ZEALOPIA</Animated.Text>
+              {/* Wordmark - visible from the start */}
+              <Animated.Image
+                source={require('@/assets/login-1.1/ChatGPT Image May 22, 2026, 11_05_03 AM 1.png')}
+                style={[styles.wordmarkImage, titleAnimatedStyle]}
+                resizeMode="contain"
+              />
+
+              <Animated.Text style={[styles.tagline, logoImageAnimatedStyle]}>
+                for your mind, your heart, and your weird little soul
+              </Animated.Text>
             </View>
 
             {/* Login Form Section - Only show after animation */}
             <Animated.View style={[styles.formSection, formAnimatedStyle]}>
-            <Text style={styles.loginTitle}>Log In Now</Text>
 
             {/* Phone Input */}
-            <View style={styles.phoneInputContainer}>
-              <View style={styles.phoneIcon}>
-                <Ionicons name="phone-portrait-outline" size={20} color="#666" />
-              </View>
-              <Text style={styles.countryCode}>+91</Text>
+            <View
+              style={[styles.phonePill, phoneNumber.length < MIN_PHONE_LENGTH && styles.phonePillDisabled]}
+            >
+              <TouchableOpacity
+                style={styles.countryBadge}
+                onPress={() => setCountryModalVisible(true)}
+                disabled={loading}
+              >
+                <Text style={styles.countryBadgeText}>
+                  {getFlagEmoji(selectedCountry.iso2)} {selectedCountry.dialCode}
+                </Text>
+                <Ionicons name="chevron-down" size={12} color="#fff" style={styles.countryBadgeChevron} />
+              </TouchableOpacity>
               <TextInput
-                style={styles.phoneInput}
+                style={styles.phonePillInput}
                 value={phoneNumber}
                 onChangeText={handlePhoneChange}
-                placeholder="Mobile Number"
-                placeholderTextColor="#999"
+                placeholder="Continue with Phone"
+                placeholderTextColor="rgba(255,255,255,0.85)"
                 keyboardType="numeric"
-                maxLength={10}
+                maxLength={MAX_PHONE_LENGTH}
+                editable={!loading}
               />
+              <TouchableOpacity
+                style={styles.phonePillArrow}
+                onPress={handlePhoneSubmit}
+                disabled={loading || phoneNumber.length < MIN_PHONE_LENGTH}
+                hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              >
+                {loading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Ionicons name="chevron-forward" size={22} color="#fff" />
+                )}
+              </TouchableOpacity>
             </View>
 
-            {/* OTP Button */}
-            <TouchableOpacity
-              style={[styles.otpButton, phoneNumber.length !== 10 && styles.otpButtonDisabled]}
-              onPress={handlePhoneSubmit}
-              disabled={loading || phoneNumber.length !== 10}
-            >
-              <Text style={styles.otpButtonText}>
-                {loading ? 'Sending OTP...' : 'Log In using OTP'}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Divider */}
-            <View style={styles.dividerContainer}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.orText}>or</Text>
-              <View style={styles.dividerLine} />
-            </View>
+            <CountryCodeModal
+              visible={countryModalVisible}
+              onClose={() => setCountryModalVisible(false)}
+              selectedDialCode={selectedCountry.dialCode}
+              onSelectCountry={setSelectedCountry}
+            />
 
             {/* Social Login Buttons */}
             <View style={styles.socialButtonsContainer}>
@@ -362,20 +353,26 @@ export default function LoginScreen() {
                 onPress={handleGoogleSignIn}
                 disabled={googleLoading}
               >
-                <Image 
+                <Image
                   source={require('@/assets/images/google.png')}
                   style={styles.socialIcon}
                 />
+                <Text style={styles.socialButtonText}>Continue with Google</Text>
               </TouchableOpacity>
 
               {/* Apple Sign In - Only show on iOS */}
-              {Platform.OS === 'ios' && (
+              {Platform.OS === 'ios' && appleSignInAvailable && (
                 <TouchableOpacity
-                  style={[styles.socialButton, styles.appleSocialButton]}
+                  style={[styles.appleButton, appleLoading && styles.appleButtonLoading]}
                   onPress={handleAppleSignIn}
                   disabled={appleLoading}
+                  activeOpacity={0.7}
                 >
-                  <Ionicons name="logo-apple" size={24} color="#fff" />
+                  <Image
+                    source={require('@/assets/login-1.1/Apple Login.png')}
+                    style={styles.appleButtonImage}
+                    resizeMode="contain"
+                  />
                 </TouchableOpacity>
               )}
             </View>
@@ -400,7 +397,10 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.splashScreen, // Start with splash screen color
+    backgroundColor: '#12052B',
+  },
+  backgroundImage: {
+    ...RNStyleSheet.absoluteFillObject,
   },
   scrollContent: {
     flex: 1,
@@ -410,153 +410,133 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 40,
+    paddingHorizontal: width * 0.118,
     justifyContent: 'center',
   },
   logoSection: {
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 22,
     // Center vertically initially, animation will move it up
-    marginTop: height * 0.05,
+    marginTop: height * 0.09,
   },
-  logoWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 15,
+  wordmarkImage: {
+    alignSelf: 'center',
+    width: width * 0.72,
+    aspectRatio: 440 / 293,
   },
-  logoContainer: {
-    position: 'absolute',
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 194,
-    height: 196,
-    resizeMode: 'contain',
-  },
-  appName: {
-    fontSize: width < 360 ? 52 : 58,
-    color: 'white',
-    letterSpacing: 2,
-    fontFamily: 'KoHo'
+  tagline: {
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.65)',
+    fontFamily: 'KoHo',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginTop: 4,
   },
   formSection: {
-    marginBottom: 40,
+    marginBottom: 22,
   },
-  loginTitle: {
-    fontSize: 20,
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  phoneInputContainer: {
+  phonePill: {
     flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
     alignItems: 'center',
-    marginBottom: 20,
+    backgroundColor: '#2C2350',
+    borderRadius: 31,
+    paddingLeft: 8,
+    paddingRight: 18,
+    minHeight: 62,
+    marginBottom: 14,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  phoneIcon: {
-    marginRight: 10,
-  },
-  countryCode: {
-    fontSize: 16,
-    color: '#333',
-    marginRight: 10,
-    fontWeight: '500',
-  },
-  phoneInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#333',
-    paddingVertical: 0,
-  },
-  otpButton: {
-    backgroundColor: Colors.myChat, // Pink color matching the image
-    borderRadius: 30,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
     elevation: 3,
   },
-  otpButtonDisabled: {
-    backgroundColor: Colors.myChat,
-    opacity: 0.9,
+  phonePillDisabled: {
+    opacity: 0.8,
   },
-  otpButtonText: {
-    color: '#333',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  dividerContainer: {
+  countryBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 25,
+    backgroundColor: 'rgba(20, 10, 40, 0.55)',
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginRight: 10,
   },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  countryBadgeChevron: {
+    marginLeft: 4,
   },
-  orText: {
-    color: 'white',
+  countryBadgeText: {
+    color: '#FFFFFF',
     fontSize: 14,
-    marginHorizontal: 15,
+    fontWeight: '600',
+  },
+  phonePillInput: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    paddingVertical: 0,
+  },
+  phonePillArrow: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
   },
   socialButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 20,
+    gap: 12,
   },
   socialButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'white',
+    width: '100%',
+    minHeight: 52,
+    borderRadius: 26,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
+    backgroundColor: 'rgba(17, 7, 49, 0.72)',
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 14,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
   },
-  appleSocialButton: {
-    backgroundColor: '#000',
+  appleButton: {
+    width: '100%',
+  },
+  appleButtonLoading: {
+    opacity: 0.7,
+  },
+  appleButtonImage: {
+    width: '100%',
+    aspectRatio: 337 / 49,
   },
   socialIcon: {
-    width: 24,
-    height: 24,
+    width: 19,
+    height: 19,
     resizeMode: 'contain',
+  },
+  socialButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
+    lineHeight: 20,
   },
   termsContainer: {
     paddingHorizontal: 20,
   },
   termsText: {
     fontSize: 12,
-    color: 'white',
+    color: 'rgba(255, 255, 255, 0.65)',
     textAlign: 'center',
     lineHeight: 18,
   },
   linkText: {
-    color: 'white',
+    color: '#C7B8FF',
     fontWeight: '600',
     lineHeight: 18,
-    textDecorationLine: 'underline',
   },
 });

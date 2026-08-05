@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 30,
+    paddingHorizontal: 24,
     paddingTop: 20,
     paddingBottom: 30,
     alignItems: 'center',
@@ -231,10 +231,10 @@ const styles = StyleSheet.create({
   },
   getStartedButton: {
     marginTop: 20,
-    backgroundColor: Colors.headerFooter,
+    backgroundColor: '#6F62B1',
     paddingHorizontal: 70,
     paddingVertical: 15,
-    borderRadius: 30,
+    borderRadius: 16,
   },
   disabledButton: {
     backgroundColor: '#CBD5E0',

@@ -15,13 +15,13 @@ const LogoHeader = () => (
 
 const styles = StyleSheet.create({
   logoContainer: {
-    padding: screenWidth * 0.08,
-    paddingTop: Platform.OS === 'ios' ? screenWidth * 0.05 : 70,
+    paddingHorizontal: screenWidth * 0.08,
+    paddingTop: Platform.OS === 'ios' ? screenWidth * 0.06 : 52,
+    paddingBottom: screenWidth * 0.04,
   },
   logoImage: {
-    width: screenWidth * 0.6,
-    height: 'auto',
-    minHeight: 100,
+    width: screenWidth * 0.5,
+    height: 82,
   },
 })
 

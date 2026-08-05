@@ -77,8 +77,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.accent.otp,
-    borderRadius: radii.field,
+    backgroundColor: colors.action.secondary,
+    borderRadius: radii.input,
+    borderWidth: 1,
+    borderColor: colors.border.default,
   },
   input: {
     ...Typography.base,

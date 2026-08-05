@@ -8,9 +8,12 @@ import auth from '@react-native-firebase/auth';
  */
 export const signInWithApple = async () => {
   try {
-    // Generate a nonce for security
-    const nonce = Math.random().toString(36).substring(2, 10);
-    
+    // Generate a cryptographically secure nonce
+    const nonceBytes = await Crypto.getRandomBytesAsync(16);
+    const nonce = Array.from(nonceBytes)
+      .map((byte) => byte.toString(16).padStart(2, '0'))
+      .join('');
+
     // Hash the nonce using expo-crypto
     const hashedNonce = await Crypto.digestStringAsync(
       Crypto.CryptoDigestAlgorithm.SHA256,

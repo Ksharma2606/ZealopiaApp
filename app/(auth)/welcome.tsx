@@ -59,44 +59,44 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#78B3AC',
+    backgroundColor: '#1F163D',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
   },
   imageContainer: {
-    marginBottom: 30,
+    marginBottom: 20,
   },
   welcomeImage: {
     width: 344,
     height: 339,
   },
   greeting: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '600',
-    color: '#2D3748',
+    color: '#FFFFFF',
     marginBottom: 20,
     marginTop: 30,
   },
   title: {
     fontSize: 22,
     fontWeight: '600',
-    color: '#F59E0B',
+    color: '#F4B7D1',
     marginBottom: 20,
   },
   subtitle: {
     fontSize: 16,
-    color: '#2D3748',
+    color: '#D9D1ED',
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 40,
   },
   getStartedButton: {
-    backgroundColor: '#2D3748',
-    borderRadius: 28,
+    backgroundColor: '#DD7896',
+    borderRadius: 16,
     paddingVertical: 18,
     paddingHorizontal: 40,
     width: width * 0.6,

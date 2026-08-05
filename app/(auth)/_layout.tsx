@@ -8,7 +8,7 @@ export const unstable_settings = {
 export default function AuthLayout() {
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="light" backgroundColor="#1F163D" />
       <Stack>
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="otp-verify" options={{ headerShown: false }} />

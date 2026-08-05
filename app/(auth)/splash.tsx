@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Image, Dimensions, Text } from 'react-native';
+import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import Animated, {
   useSharedValue,
@@ -9,9 +9,8 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { useAuth } from '@/lib/context/AuthContext';
-import Colors from '@/constants/Colors';
 
-// const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function SplashScreen() {
   const router = useRouter();
@@ -105,16 +104,12 @@ export default function SplashScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
+        <Animated.View style={[styles.iconWrapper, logoAnimatedStyle]}>
           <Image
-            source={require('@/assets/images/logo.png')}
-            style={styles.logo}
+            source={require('@/assets/splashscreen-1/ChatGPT Image May 22, 2026, 11_02_44 AM 1.png')}
+            style={styles.icon}
             resizeMode="contain"
           />
-        </Animated.View>
-        
-        <Animated.View style={[styles.titleContainer, titleAnimatedStyle]}>
-          <Text style={styles.logoText}>ZEALOPIA</Text>
         </Animated.View>
       </View>
     </View>
@@ -124,29 +119,21 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.splashScreen, // Matching Flutter splash1 color
+    backgroundColor: '#16112B',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    // Figma places the icon slightly above true center
+    marginTop: -height * 0.035,
   },
-  logo: {
-    width: 194,
-    height: 196,
-  },
-  titleContainer: {
+  iconWrapper: {
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    width: 200,
-    height: 60,
+  icon: {
+    width: width * 0.48,
+    aspectRatio: 1,
   },
-  logoText: {
-    fontFamily: 'KoHo',
-    fontWeight: '600',
-    color: Colors.white,
-    fontSize: 58,
-    letterSpacing: 2
-  }
 });

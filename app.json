@@ -9,9 +9,9 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/1x1.png",
+      "image": "./assets/splashscreen-1/ChatGPT Image May 22, 2026, 11_02_44 AM 1.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F6F058"
+      "backgroundColor": "#16112B"
     },
     "ios": {
       "supportsTablet": true,
