@@ -17,7 +17,7 @@ import {
 import { BaseText as Text } from '@/components/ui/Base';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { signInWithGoogle, sendOTP, phoneAuthService, signInWithApple, isAppleSignInAvailable } from '@/lib/firebase/auth';
+import { signInWithGoogle, sendOTP, phoneAuthService, signInWithApple, isAppleSignInAvailable, isValidE164PhoneNumber } from '@/lib/firebase/auth';
 import CountryCodeModal from '@/components/modals/CountryCodeModal';
 import { CountryDialCode, getFlagEmoji } from '@/constants/CountryCodes';
 import Animated, {
@@ -48,6 +48,7 @@ export default function LoginScreen() {
     dialCode: '+91',
   });
   const [countryModalVisible, setCountryModalVisible] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
@@ -121,19 +122,37 @@ export default function LoginScreen() {
     const numbersOnly = text.replace(/[^0-9]/g, '');
     if (numbersOnly.length <= MAX_PHONE_LENGTH) {
       setPhoneNumber(numbersOnly);
+      if (phoneError) {
+        setPhoneError(null);
+      }
     }
   };
 
   // Handle phone number submission
   const handlePhoneSubmit = async () => {
-    if (phoneNumber.length < MIN_PHONE_LENGTH) {
-      Alert.alert('Invalid Phone Number', 'Please enter a valid phone number');
+    if (loading) {
+      return;
+    }
+
+    // India always has 10-digit local numbers; other countries vary, so just require the minimum
+    const isIndia = selectedCountry.dialCode === '+91';
+    const hasValidLocalLength = isIndia ? phoneNumber.length === 10 : phoneNumber.length >= MIN_PHONE_LENGTH;
+
+    if (!hasValidLocalLength) {
+      setPhoneError(isIndia ? 'Enter a valid 10-digit number.' : 'Enter a valid phone number.');
       return;
     }
 
     const fullPhoneNumber = `${selectedCountry.dialCode}${phoneNumber}`;
+
+    if (!isValidE164PhoneNumber(fullPhoneNumber)) {
+      setPhoneError('Enter a valid phone number.');
+      return;
+    }
+
+    setPhoneError(null);
     setLoading(true);
-    
+
     try {
       console.log('Sending OTP to:', fullPhoneNumber);
       
@@ -302,7 +321,7 @@ export default function LoginScreen() {
 
             {/* Phone Input */}
             <View
-              style={[styles.phonePill, phoneNumber.length < MIN_PHONE_LENGTH && styles.phonePillDisabled]}
+              style={[styles.phonePill, phoneError && styles.phonePillError]}
             >
               <TouchableOpacity
                 style={styles.countryBadge}
@@ -327,7 +346,7 @@ export default function LoginScreen() {
               <TouchableOpacity
                 style={styles.phonePillArrow}
                 onPress={handlePhoneSubmit}
-                disabled={loading || phoneNumber.length < MIN_PHONE_LENGTH}
+                disabled={loading}
                 hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               >
                 {loading ? (
@@ -337,6 +356,10 @@ export default function LoginScreen() {
                 )}
               </TouchableOpacity>
             </View>
+
+            {phoneError && (
+              <Text style={styles.phoneErrorText}>‼ {phoneError}</Text>
+            )}
 
             <CountryCodeModal
               visible={countryModalVisible}
@@ -450,8 +473,15 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
   },
-  phonePillDisabled: {
-    opacity: 0.8,
+  phonePillError: {
+    backgroundColor: '#A6454C',
+  },
+  phoneErrorText: {
+    color: '#FB6B5B',
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: -6,
+    marginBottom: 10,
   },
   countryBadge: {
     flexDirection: 'row',

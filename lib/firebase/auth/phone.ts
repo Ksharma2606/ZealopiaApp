@@ -3,6 +3,12 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { Platform } from 'react-native';
 import apiService from '@/lib/services/ApiService';
 
+// E.164: a leading '+', a non-zero first digit, then up to 14 more digits (15 digits max total).
+const E164_REGEX = /^\+[1-9]\d{7,14}$/;
+
+export const isValidE164PhoneNumber = (phoneNumber: string): boolean =>
+  E164_REGEX.test(phoneNumber);
+
 export interface PhoneAuthResult {
   success: boolean;
   verificationId?: string;
@@ -23,7 +29,6 @@ export interface PhoneAuthState {
   isLoading: boolean;
   error: string | null;
   canResend: boolean;
-  resendToken?: FirebaseAuthTypes.ForceResendingToken;
 }
 
 class PhoneAuthService {
@@ -34,7 +39,6 @@ class PhoneAuthService {
     isLoading: false,
     error: null,
     canResend: false,
-    resendToken: undefined,
   };
 
   private listeners: ((state: PhoneAuthState) => void)[] = [];
@@ -76,11 +80,11 @@ class PhoneAuthService {
   // Send OTP to phone number
   public async sendOTP(phoneNumber: string): Promise<PhoneAuthResult> {
     try {
-      // Validate phone number format
-      if (!phoneNumber || !phoneNumber.startsWith('+91') || phoneNumber.length !== 13) {
+      // Validate phone number format (E.164 - works for any country's dial code)
+      if (!isValidE164PhoneNumber(phoneNumber)) {
         return {
           success: false,
-          error: 'Invalid phone number format. Please use +91XXXXXXXXXX format.',
+          error: 'Invalid phone number format. Please check the number and try again.',
         };
       }
 
@@ -104,26 +108,25 @@ class PhoneAuthService {
 
         return {
           success: true,
-          verificationId: confirmationResult.verificationId,
+          verificationId: confirmationResult.verificationId ?? undefined,
         };
       }
 
       // For mobile platforms, use verifyPhoneNumber with callback pattern
       return new Promise<PhoneAuthResult>((resolve) => {
         auth()
-          .verifyPhoneNumber(phoneNumber, 60, this.authState.resendToken)
+          .verifyPhoneNumber(phoneNumber, 60)
           .on('state_changed', (phoneAuthSnapshot) => {
             console.log('Phone auth state changed:', phoneAuthSnapshot.state);
-            
+
             switch (phoneAuthSnapshot.state) {
               case auth.PhoneAuthState.CODE_SENT:
                 console.log('OTP sent, verification ID:', phoneAuthSnapshot.verificationId);
-                
+
                 this.updateState({
                   verificationId: phoneAuthSnapshot.verificationId,
                   isLoading: false,
                   canResend: true,
-                  resendToken: phoneAuthSnapshot.code,
                 });
 
                 resolve({
@@ -139,11 +142,11 @@ class PhoneAuthService {
 
               case auth.PhoneAuthState.AUTO_VERIFIED:
                 console.log('Auto verified, signing in...');
-                
+
                 // Create credential and sign in
                 const credential = auth.PhoneAuthProvider.credential(
                   phoneAuthSnapshot.verificationId,
-                  phoneAuthSnapshot.code
+                  phoneAuthSnapshot.code ?? undefined
                 );
                 
                 auth()
@@ -283,7 +286,7 @@ class PhoneAuthService {
     }
   }
 
-  // Resend OTP - using resend token if available (matching Flutter Flow)
+  // Resend OTP - forces a fresh SMS to be sent for the same phone number
   public async resendOTP(): Promise<PhoneAuthResult> {
     if (!this.authState.phoneNumber) {
       return {
@@ -298,12 +301,12 @@ class PhoneAuthService {
         error: null,
       });
 
-      console.log('Resending OTP to:', this.authState.phoneNumber, 'with resend token:', !!this.authState.resendToken);
+      console.log('Resending OTP to:', this.authState.phoneNumber);
 
       // For web platform, use different approach
       if (Platform.OS === 'web') {
         const confirmationResult = await auth().signInWithPhoneNumber(this.authState.phoneNumber);
-        
+
         this.updateState({
           verificationId: confirmationResult.verificationId,
           isLoading: false,
@@ -312,26 +315,25 @@ class PhoneAuthService {
 
         return {
           success: true,
-          verificationId: confirmationResult.verificationId,
+          verificationId: confirmationResult.verificationId ?? undefined,
         };
       }
 
-      // For mobile platforms, use verifyPhoneNumber with resend token
+      // For mobile platforms, use verifyPhoneNumber with forceResend so a fresh SMS is always sent
       return new Promise<PhoneAuthResult>((resolve) => {
         auth()
-          .verifyPhoneNumber(this.authState.phoneNumber!, 60, this.authState.resendToken)
+          .verifyPhoneNumber(this.authState.phoneNumber!, 60, true)
           .on('state_changed', (phoneAuthSnapshot) => {
             console.log('Phone auth state changed (resend):', phoneAuthSnapshot.state);
-            
+
             switch (phoneAuthSnapshot.state) {
               case auth.PhoneAuthState.CODE_SENT:
                 console.log('OTP resent, new verification ID:', phoneAuthSnapshot.verificationId);
-                
+
                 this.updateState({
                   verificationId: phoneAuthSnapshot.verificationId,
                   isLoading: false,
                   canResend: true,
-                  resendToken: phoneAuthSnapshot.code, // Update resend token for next resend
                 });
 
                 resolve({
@@ -351,9 +353,9 @@ class PhoneAuthService {
                 // Create credential and sign in
                 const credential = auth.PhoneAuthProvider.credential(
                   phoneAuthSnapshot.verificationId,
-                  phoneAuthSnapshot.code
+                  phoneAuthSnapshot.code ?? undefined
                 );
-                
+
                 auth()
                   .signInWithCredential(credential)
                   .then(() => {
@@ -495,7 +497,6 @@ class PhoneAuthService {
       isLoading: false,
       error: null,
       canResend: false,
-      resendToken: undefined,
     };
     this.notifyListeners();
   }

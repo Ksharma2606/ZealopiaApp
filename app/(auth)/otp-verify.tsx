@@ -85,7 +85,7 @@ export default function OTPVerifyScreen() {
 
   // Timer countdown effect - start immediately on page load
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (timer > 0 && !isResendAllowed) {
       interval = setInterval(() => {
         setTimer((prev) => {
