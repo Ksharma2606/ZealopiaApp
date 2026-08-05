@@ -1,0 +1,12 @@
+PHASE 2 — AUTHENTICATION AND ONBOARDING PRESENTATION
+
+Scope: Apply approved shared tokens/components to splash, login, OTP,
+profile setup, welcome, topics and Zora intro screens.
+
+Preserved: Firebase phone, Google and Apple sign-in flows; OTP and backend
+registration behaviour; RouteGuard decisions; all route names and payloads.
+
+Expected files when approved: app/(auth)/*.tsx and shared auth-facing
+components only. No service, context, Firebase or API files should change.
+
+Verification: Sign-in, OTP resend/verify, profile setup and sign-out flows.

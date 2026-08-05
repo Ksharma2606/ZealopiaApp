@@ -1,0 +1,15 @@
+PHASE 1 — DESIGN SYSTEM AND SHARED FOUNDATION
+
+Scope: Create semantic theme tokens (colours, typography, spacing, radii,
+shadows, gradients and motion); refactor shared primitives only; centralize
+shared header/tab styling where it has no layout impact.
+
+Non-goals: No screen redesign, route changes, authentication changes, API
+changes, feature removal, or business-logic changes.
+
+Expected files when approved: new theme/* files; compatibility updates to
+constants/Colors.ts and constants/Gradients.ts; shared component files under
+components/ui; only layout styling in app/(tabs)/_layout.tsx if necessary.
+
+Verification: TypeScript check, Expo Router startup, and authentication/tab
+navigation smoke test.

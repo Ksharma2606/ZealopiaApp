@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "528730927279",
+    "project_id": "zealopiadev",
+    "storage_bucket": "zealopiadev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528730927279:android:c270d5374cacacf567245a",
+        "android_client_info": {
+          "package_name": "com.zealopia.zealopiadev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "528730927279-e6d6sf6mrmpfksgqmpvf06u23jnksbqh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zealopia.zealopiadev",
+            "certificate_hash": "b544ea85030c1fee5699823aa9210cf6eb3065f2"
+          }
+        },
+        {
+          "client_id": "528730927279-rck5q44360g5qbs1od410d4r2ub5acjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnQ52ZQLD8HOC2TGslpeZtjd6zg2O4zpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "528730927279-rck5q44360g5qbs1od410d4r2ub5acjv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "528730927279-bf5g6t9li69moil3ma9vli4rti1vnvj8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.zealopia.zealopiadev"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

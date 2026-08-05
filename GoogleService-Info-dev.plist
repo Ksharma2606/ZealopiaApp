@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>528730927279-bf5g6t9li69moil3ma9vli4rti1vnvj8.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.528730927279-bf5g6t9li69moil3ma9vli4rti1vnvj8</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>528730927279-e6d6sf6mrmpfksgqmpvf06u23jnksbqh.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA_gWF5XWy30u-JwwJL4eScvWor5c0mdHU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>528730927279</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.zealopia.zealopiadev</string>
+	<key>PROJECT_ID</key>
+	<string>zealopiadev</string>
+	<key>STORAGE_BUCKET</key>
+	<string>zealopiadev.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:528730927279:ios:57120bc2ac3db06367245a</string>
+</dict>
+</plist>

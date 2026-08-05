@@ -1,0 +1,13 @@
+PHASE 3 — HOME DASHBOARD PRESENTATION
+
+Scope: Apply the design system to the existing home dashboard and its shared
+streak/profile display components without changing data requests or actions.
+
+Preserved: Current auth-derived user data, navigation targets and existing
+dashboard interactions.
+
+Expected files when approved: app/(tabs)/index.tsx, any retained legacy
+home route, and the directly related UI display components.
+
+Verification: Authenticated launch, dashboard rendering and all dashboard
+navigation actions.

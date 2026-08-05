@@ -1,0 +1,13 @@
+PHASE 7 — BOOKING, SESSIONS AND PAYMENTS PRESENTATION
+
+Scope: Restyle payment, credits, therapist matching, subscription extension
+and booking/session surfaces that already exist.
+
+Preserved: Razorpay service calls, backend payloads, credit calculations,
+payment verification and all pricing/business rules.
+
+Expected files when approved: credits/payment/match screens and their display
+components. No payment service implementation changes.
+
+Verification: Credit purchase/redeem, payment launch, success/failure and
+subscription-extension states.

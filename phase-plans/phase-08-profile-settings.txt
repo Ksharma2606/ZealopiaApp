@@ -1,0 +1,13 @@
+PHASE 8 — PROFILE, SETTINGS AND NOTIFICATIONS PRESENTATION
+
+Scope: Apply shared styles to profile editing, wallet/profile tabs, account
+settings and notification-facing UI that already exists.
+
+Preserved: Profile update fields, API requests, account state, deep links and
+notification service behaviour.
+
+Expected files when approved: app/user-profile.tsx, app/(tabs)/profile.tsx,
+wallet/profile display components and relevant notification UI only.
+
+Verification: Profile save, topic selection, referral sharing, credits and
+notification navigation.

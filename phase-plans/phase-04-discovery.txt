@@ -1,0 +1,13 @@
+PHASE 4 — DISCOVERY, SEARCH AND GROUPS PRESENTATION
+
+Scope: Restyle explore, group search, group cards, medic cards, filters and
+sort controls using shared components.
+
+Preserved: Search parameters, filters, pagination/caching, group join rules,
+credit/payment entry points and every API contract.
+
+Expected files when approved: app/(tabs)/explore.tsx, app/group-search.tsx,
+components/ui/GroupCard.tsx, components/ui/MedicCard.tsx and filter/sort
+modals.
+
+Verification: Search, filter, sort, direct join and error/empty states.

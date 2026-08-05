@@ -1,0 +1,12 @@
+PHASE 5 — CHAT PRESENTATION
+
+Scope: Restyle chat list, chat detail, message items, composer, recording
+controls, media previews and chat-related prompts.
+
+Preserved: Firebase subscriptions, Zustand stores, message data shape,
+attachments/audio workflows, subscription actions and chat navigation.
+
+Expected files when approved: app/chat-detail.tsx, ChatHomeScreen.tsx and
+components/chat/* only where presentation changes are needed.
+
+Verification: Chat loading, send, receive, attachment, audio and modal flows.

@@ -1,0 +1,102 @@
+{
+  "project_info": {
+    "project_number": "782181631788",
+    "project_id": "zeal2-3435c",
+    "storage_bucket": "zeal2-3435c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782181631788:android:c2ef96bf9dfd2d56e74e89",
+        "android_client_info": {
+          "package_name": "com.zealopia.zealopia2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782181631788-07u2u3g847bfu7if214ae92nduobv00h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zealopia.zealopia2",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "782181631788-1sl4pm0api8fafiiieqi5nvljrl7c51o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zealopia.zealopia2",
+            "certificate_hash": "42c47818aa602171b59e85bc1fad97285e6730d7"
+          }
+        },
+        {
+          "client_id": "782181631788-8ddf9ue99pm719s1m0792alp9o0arjj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zealopia.zealopia2",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "782181631788-eoofljnun122u6pian0q44kmpimjaqtg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zealopia.zealopia2",
+            "certificate_hash": "70dd1c5d75c06ed456a29c9dbdb7adc0f3ca8096"
+          }
+        },
+        {
+          "client_id": "782181631788-f5766f73msapurigte09msri15es8362.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zealopia.zealopia2",
+            "certificate_hash": "011a115102bc70d583dd47cff4dc487e87c0d7c5"
+          }
+        },
+        {
+          "client_id": "782181631788-sjn139gt5iti2cid9pvo8a880ei3vgpu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zealopia.zealopia2",
+            "certificate_hash": "b544ea85030c1fee5699823aa9210cf6eb3065f2"
+          }
+        },
+        {
+          "client_id": "782181631788-u82id46sskttdpiqjpbuvc16jvbbs15t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zealopia.zealopia2",
+            "certificate_hash": "ca089f3ed3ba3688aeb3a4e31ce92034b6afba09"
+          }
+        },
+        {
+          "client_id": "782181631788-99o999vqnleoggst0nc4kif9but06b0v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq_mMBs5a-ZJmqHHIGSIMvcf_7rg6YkXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782181631788-99o999vqnleoggst0nc4kif9but06b0v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "782181631788-0c85el44c1mm95j9v8o4kdi65oh8n6bp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.zealopia.zealopia"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

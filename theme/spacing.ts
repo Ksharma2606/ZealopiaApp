@@ -1,0 +1,16 @@
+export const spacing = {
+  none: 0,
+  hairline: 2,
+  xxs: 4,
+  xs: 6,
+  sm: 8,
+  sectionInset: 10,
+  md: 12,
+  lg: 14,
+  xl: 15,
+  xxl: 16,
+  xxxl: 20,
+  huge: 24,
+  oversized: 32,
+  touchTarget: 48,
+} as const;

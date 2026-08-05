@@ -1,0 +1,12 @@
+PHASE 6 — COMMUNITY PRESENTATION
+
+Scope: Apply the approved design system to community/group participation
+surfaces if those flows are present or added to the existing app scope.
+
+Preserved: Existing group membership rules, member permissions, comments or
+post APIs, and navigation contracts.
+
+Expected files when approved: group/community route and component files only
+after the exact existing feature scope is audited.
+
+Verification: Membership, content interactions and permission states.

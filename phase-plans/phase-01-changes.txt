@@ -1,0 +1,96 @@
+PHASE 1 — DESIGN SYSTEM AND SHARED FOUNDATION
+
+Status: Planning only. No application code has been changed.
+
+ARCHITECTURE SUMMARY
+
+- Framework: Expo 53, React Native 0.79, TypeScript, and Expo Router.
+- Navigation: app/(auth) contains the authentication/onboarding flow;
+  app/(tabs) contains the authenticated tab navigation; top-level app routes
+  contain feature-detail screens and modal-like experiences.
+- Application setup: app/_layout.tsx composes authentication, safe-area,
+  keyboard, splash, notification, deep-link, and chat-initialization concerns.
+- Data and business logic: lib/context contains authentication state;
+  lib/services contains API, Firebase, payment, storage, notification, and
+  related integrations; lib/stores contains Zustand chat state.
+- Presentation: components/ui contains shared primitives and reusable display
+  pieces. Screen-specific presentation is kept in app/, components/chat/, and
+  components/modals/.
+
+PHASE 1 SCOPE
+
+Create a semantic design-token layer for colours, typography, spacing, radii,
+shadows, gradients, and motion. Refactor shared primitives to consume those
+tokens. Consolidate common tab/header styling only where doing so does not
+change a screen layout.
+
+PHASE 1 NON-GOALS
+
+- No screen redesign.
+- No route, authentication, Firebase, API, store, or payment changes.
+- No feature or business-rule changes.
+- No changes to chat, group, profile, payment, or onboarding screens.
+
+COMPATIBILITY ITEMS
+
+- Keep constants/Colors.ts as a compatibility facade so existing screens can
+  continue to use their current colour names while the new semantic tokens are
+  introduced.
+- Include aliases for currently referenced legacy names such as primaryText,
+  secondaryText, and secondaryBg.
+- Keep constants/Gradients.ts as a compatibility facade for current gradient
+  consumers.
+- Correct the shared ArrowField dependency on Typography.base by exposing a
+  compatible base text style or changing ArrowField to a supported semantic
+  typography token.
+
+FILES TO ADD
+
+- theme/colors.ts
+- theme/typography.ts
+- theme/spacing.ts
+- theme/radii.ts
+- theme/shadows.ts
+- theme/gradients.ts
+- theme/motion.ts
+- theme/index.ts
+
+FILES TO MODIFY
+
+- constants/Colors.ts
+- constants/Gradients.ts
+- components/ui/Base.tsx
+- components/ui/Button.tsx
+- components/ui/Card.tsx
+- components/ui/Input.tsx
+- components/ui/ArrowField.tsx
+- components/ui/CollapsibleSection.tsx
+- components/ui/UnreadBadge.tsx
+- components/ui/ErrorComponents.tsx
+- app/(tabs)/_layout.tsx
+
+EXPLICITLY OUT OF SCOPE FOR PHASE 1
+
+- app/(auth)/*.tsx
+- app/(tabs)/index.tsx, home.tsx, explore.tsx, chats.tsx, wallet.tsx,
+  profile.tsx, and create-group.tsx
+- app/chat-detail.tsx, group-details.tsx, group-search.tsx, credits.tsx,
+  user-profile.tsx, and all other feature routes
+- components/chat/*
+- components/modals/*
+- lib/context/*, lib/firebase/*, lib/hooks/*, lib/services/*, lib/stores/*,
+  and lib/utils/*
+
+FIGMA STATUS
+
+The connected Figma design has not yet been inspectable because no node-specific
+Figma URL was provided. Figma design-context access requires both a file key and
+a node ID. The Phase 1 file list above follows the project’s existing
+phase-plans/phase-01-foundation.txt scope and should be confirmed against the
+provided design before implementation.
+
+VERIFICATION AFTER IMPLEMENTATION
+
+- Run the TypeScript check.
+- Start Expo Router.
+- Smoke-test authentication and tab navigation.

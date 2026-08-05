@@ -1,0 +1,14 @@
+PHASE 9 — QUALITY, ACCESSIBILITY AND PERFORMANCE
+
+Scope: Add motion only where specified by an approved design; improve
+accessibility labels/roles, responsive behavior, list performance and loading
+states. Add dark mode only if a supplied design requires it.
+
+Preserved: All current workflows, data fetching, authentication, routes and
+business contracts.
+
+Expected files when approved: only components/screens identified by profiling
+and accessibility review; no speculative feature work.
+
+Verification: TypeScript, lint/test commands available in the project, mobile
+and tablet checks, reduced-motion behavior and regression smoke tests.
