@@ -519,7 +519,9 @@ class PhoneAuthService {
       case 'auth/network-request-failed':
         return 'Network error. Please check your connection and try again.';
       case 'auth/app-not-authorized':
-        return 'App not authorized for phone authentication.';
+        return __DEV__
+          ? 'Configuration error: this app is not authorized for phone sign-in. Check that the debug SHA-1/SHA-256 fingerprints are registered in Firebase Console (Project Settings > Your apps > Android app), and that google-services.json is up to date.'
+          : 'Phone sign-in is temporarily unavailable. Please try again later or contact support.';
       case 'auth/captcha-check-failed':
         return 'Captcha verification failed. Please try again.';
       default:

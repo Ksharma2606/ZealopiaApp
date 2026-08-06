@@ -49,7 +49,9 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     }
 
     if (!isSignupComplete) {
-      const onboardingScreens = ['profile-setup', 'zora-intro'];
+      // 'soul-colour'/'soul-colour-answer' added so these screens are reachable during onboarding -
+      // they're UI-only for now (see progress log), not yet wired into the automatic redirect below.
+      const onboardingScreens = ['profile-setup', 'zora-intro', 'soul-colour', 'soul-colour-answer'];
 
       if (inAuthGroup && currentScreen && onboardingScreens.includes(currentScreen)) {
         return;
