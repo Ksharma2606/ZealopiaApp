@@ -266,7 +266,6 @@ export default function OTPVerifyScreen() {
                   style={[
                     styles.otpBox,
                     isFilled && (otpErrorType === 'incorrect' ? styles.otpBoxFilledError : styles.otpBoxFilled),
-                    isNextCursor && styles.otpBoxActive,
                   ]}
                 >
                   {isFilled ? (
@@ -317,7 +316,12 @@ export default function OTPVerifyScreen() {
 
           <View style={styles.spacer} />
 
-          <TouchableOpacity onPress={handleVerifyOtp} disabled={verifyDisabled} activeOpacity={0.85}>
+          <TouchableOpacity
+            style={styles.verifyButtonWrapper}
+            onPress={handleVerifyOtp}
+            disabled={verifyDisabled}
+            activeOpacity={0.85}
+          >
             {verifyDisabled ? (
               <View style={[styles.verifyButton, styles.verifyButtonDisabled]}>
                 <Text style={styles.verifyButtonTextDisabled}>{loading ? 'Verifying...' : 'Verify'}</Text>
@@ -371,7 +375,7 @@ const styles = StyleSheet.create({
   },
   phoneRowText: {
     fontSize: 14,
-    color: '#534D6B',
+    color: '#B9B2D4',
   },
   editText: {
     fontSize: 14,
@@ -385,7 +389,7 @@ const styles = StyleSheet.create({
   },
   otpBox: {
     flex: 1,
-    aspectRatio: 1,
+    aspectRatio: 58 / 67,
     marginHorizontal: 4,
     borderRadius: 14,
     borderWidth: 2,
@@ -395,28 +399,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   otpBoxFilled: {
-    backgroundColor: '#9B6DFF',
+    backgroundColor: '#2C2350',
     borderColor: '#9B6DFF',
   },
   otpBoxFilledError: {
     backgroundColor: '#5A2C39',
     borderColor: '#FB6B5B',
   },
-  otpBoxActive: {
-    borderColor: '#D8C4FF',
-  },
   otpDigit: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#F7F3EA',
+    color: '#9B6DFF',
   },
   otpDigitError: {
     color: '#FB6B5B',
   },
   otpCursor: {
-    width: 2,
-    height: 22,
-    backgroundColor: '#D8C4FF',
+    width: 4,
+    height: 30,
+    borderRadius: 2,
+    backgroundColor: '#9B6DFF',
   },
   hiddenInput: {
     position: 'absolute',
@@ -428,8 +430,9 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 13,
-    color: '#9A94B5',
+    color: '#B9B2D4',
     marginBottom: 14,
+    textAlign: 'center',
   },
   statusTextError: {
     color: '#FB6B5B',
@@ -440,11 +443,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   actionPill: {
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
+    width: '49%',
+    minHeight: 58,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#2C2350',
     borderRadius: 999,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
   },
   actionPillText: {
     fontSize: 14,
@@ -460,9 +466,13 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 40,
   },
+  verifyButtonWrapper: {
+    alignSelf: 'center',
+    width: '52%',
+  },
   verifyButton: {
     borderRadius: 31,
-    minHeight: 62,
+    minHeight: 58,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#9B6DFF',
