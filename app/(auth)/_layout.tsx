@@ -14,6 +14,8 @@ export default function AuthLayout() {
         <Stack.Screen name="otp-verify" options={{ headerShown: false }} />
         <Stack.Screen name="soul-colour" options={{ headerShown: false }} />
         <Stack.Screen name="soul-colour-answer" options={{ headerShown: false }} />
+        <Stack.Screen name="zora-choose-name" options={{ headerShown: false }} />
+        <Stack.Screen name="zora-message" options={{ headerShown: false }} />
         <Stack.Screen name="profile-setup" options={{ headerShown: false }} />
         <Stack.Screen name="welcome" options={{ headerShown: false }} />
         <Stack.Screen name="topics" options={{ headerShown: false }} />

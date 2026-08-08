@@ -18,6 +18,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 import { AuthProvider, useAuth } from '@/lib/context/AuthContext';
@@ -117,53 +118,55 @@ function RootLayoutNav() {
   };
 
   return (
-    <KeyboardProvider>
-      <SafeAreaProvider>
-        <AuthProvider>
-          <SplashScreenManager>
-            <ChatInitializer>
-              <RouteGuard>
-                <ThemeProvider value={navigationTheme}>
-                  <Stack>
-                    <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-                    <Stack.Screen
-                      name="chat-detail"
-                      options={{
-                        headerShown: true,
-                        animation: 'slide_from_right',
-                      }}
-                    />
-                    <Stack.Screen
-                      name="generating-soul-profile"
-                      options={{
-                        headerShown: false,
-                        animation: 'fade',
-                      }}
-                    />
-                    <Stack.Screen
-                      name="top-expert-matches"
-                      options={{
-                        headerShown: false,
-                        animation: 'slide_from_right',
-                      }}
-                    />
-                    <Stack.Screen
-                      name="top-user-matches"
-                      options={{
-                        headerShown: false,
-                        animation: 'slide_from_right',
-                      }}
-                    />
-                  </Stack>
-                </ThemeProvider>
-              </RouteGuard>
-            </ChatInitializer>
-          </SplashScreenManager>
-        </AuthProvider>
-      </SafeAreaProvider>
-    </KeyboardProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <KeyboardProvider>
+        <SafeAreaProvider>
+          <AuthProvider>
+            <SplashScreenManager>
+              <ChatInitializer>
+                <RouteGuard>
+                  <ThemeProvider value={navigationTheme}>
+                    <Stack>
+                      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+                      <Stack.Screen
+                        name="chat-detail"
+                        options={{
+                          headerShown: true,
+                          animation: 'slide_from_right',
+                        }}
+                      />
+                      <Stack.Screen
+                        name="generating-soul-profile"
+                        options={{
+                          headerShown: false,
+                          animation: 'fade',
+                        }}
+                      />
+                      <Stack.Screen
+                        name="top-expert-matches"
+                        options={{
+                          headerShown: false,
+                          animation: 'slide_from_right',
+                        }}
+                      />
+                      <Stack.Screen
+                        name="top-user-matches"
+                        options={{
+                          headerShown: false,
+                          animation: 'slide_from_right',
+                        }}
+                      />
+                    </Stack>
+                  </ThemeProvider>
+                </RouteGuard>
+              </ChatInitializer>
+            </SplashScreenManager>
+          </AuthProvider>
+        </SafeAreaProvider>
+      </KeyboardProvider>
+    </GestureHandlerRootView>
   );
 }
 

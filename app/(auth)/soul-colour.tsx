@@ -10,9 +10,6 @@ const { width, height } = Dimensions.get('window');
 
 // No backend "soul colour" model exists yet (see progress log). This screen picks a color from a
 // placeholder 2D gradient field and passes it forward via local state + navigation params only.
-// "magic purple" is the one name shown in the Figma export; a real per-color naming system is
-// pending backend work, so it's used here as a static placeholder label rather than invented copy.
-const DEFAULT_NAME = 'magic purple';
 
 const FIELD_CORNERS = {
   topLeft: { r: 155, g: 109, b: 255 }, // violet
@@ -21,7 +18,76 @@ const FIELD_CORNERS = {
   bottomRight: { r: 255, g: 179, b: 92 }, // orange
 };
 
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+// "magic purple" is the only color name that exists anywhere in this project (Figma export,
+// Flutter reference, backend) - confirmed by search before adding the rest. There's no real
+// per-color naming system to reuse, so these are derived from hue, anchored to the field's own
+// four corner colors (coral/orange/green/purple all match an actual corner above) plus three
+// transitional names for the blends between them, all reusing the same "magic ___" convention
+// rather than inventing an unrelated naming scheme.
+const COLOR_ANCHORS: { hue: number; name: string }[] = [
+  { hue: 6, name: 'magic coral' }, // bottomLeft corner
+  { hue: 32, name: 'magic orange' }, // bottomRight corner
+  { hue: 80, name: 'magic gold' },
+  { hue: 142, name: 'magic green' }, // topRight corner
+  { hue: 195, name: 'magic teal' },
+  { hue: 259, name: 'magic purple' }, // topLeft corner
+  { hue: 320, name: 'magic pink' },
+];
+
+const lerp = (a: number, b: number, t: number) => {
+  'worklet';
+  return a + (b - a) * t;
+};
+
+// Same bilinear field as fieldColorAt below, but worklet-safe (no toHex/string ops) so it can run
+// on the UI thread inside the pan gesture without crossing the JS bridge on every frame.
+const hueAt = (x: number, y: number) => {
+  'worklet';
+  const r = lerp(
+    lerp(FIELD_CORNERS.topLeft.r, FIELD_CORNERS.topRight.r, x),
+    lerp(FIELD_CORNERS.bottomLeft.r, FIELD_CORNERS.bottomRight.r, x),
+    y
+  );
+  const g = lerp(
+    lerp(FIELD_CORNERS.topLeft.g, FIELD_CORNERS.topRight.g, x),
+    lerp(FIELD_CORNERS.bottomLeft.g, FIELD_CORNERS.bottomRight.g, x),
+    y
+  );
+  const b = lerp(
+    lerp(FIELD_CORNERS.topLeft.b, FIELD_CORNERS.topRight.b, x),
+    lerp(FIELD_CORNERS.bottomLeft.b, FIELD_CORNERS.bottomRight.b, x),
+    y
+  );
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+  if (delta === 0) return 0;
+  let hue = 0;
+  if (max === r) hue = ((g - b) / delta) % 6;
+  else if (max === g) hue = (b - r) / delta + 2;
+  else hue = (r - g) / delta + 4;
+  hue *= 60;
+  if (hue < 0) hue += 360;
+  return hue;
+};
+
+// Nearest color-family by hue, wrapping around the 0/360 boundary. The field is a continuous
+// gradient with no "empty" gaps, so every position always resolves to a valid name - matching the
+// "retain the nearest valid colour" behavior rather than ever showing no label.
+const colorNameForHue = (hue: number) => {
+  'worklet';
+  let closest = COLOR_ANCHORS[0].name;
+  let closestDist = 999;
+  for (let i = 0; i < COLOR_ANCHORS.length; i++) {
+    let dist = Math.abs(hue - COLOR_ANCHORS[i].hue);
+    if (dist > 180) dist = 360 - dist;
+    if (dist < closestDist) {
+      closestDist = dist;
+      closest = COLOR_ANCHORS[i].name;
+    }
+  }
+  return closest;
+};
 
 const toHex = (r: number, g: number, b: number) =>
   `#${[r, g, b].map((c) => Math.round(c).toString(16).padStart(2, '0')).join('')}`;
@@ -55,13 +121,21 @@ export default function SoulColourScreen() {
   const router = useRouter();
   const [hasInteracted, setHasInteracted] = useState(false);
   const [selected, setSelected] = useState(() => fieldColorAt(DEFAULT_POS.x, DEFAULT_POS.y));
+  const [selectedName, setSelectedName] = useState(() => colorNameForHue(hueAt(DEFAULT_POS.x, DEFAULT_POS.y)));
 
   const posX = useSharedValue(PICKER_SIZE * DEFAULT_POS.x);
   const posY = useSharedValue(PICKER_SIZE * DEFAULT_POS.y);
+  // Tracks the last name sent across the bridge so onChange only calls runOnJS when the
+  // detected color family actually changes, not on every pixel of drag movement.
+  const lastColorName = useSharedValue(selectedName);
 
   const updateSelectedColor = (nx: number, ny: number) => {
     setSelected(fieldColorAt(nx, ny));
     setHasInteracted(true);
+  };
+
+  const updateSelectedName = (name: string) => {
+    setSelectedName(name);
   };
 
   const pan = Gesture.Pan().onChange((event) => {
@@ -70,7 +144,16 @@ export default function SoulColourScreen() {
     const nextY = Math.min(Math.max(posY.value + event.changeY, 0), PICKER_SIZE);
     posX.value = nextX;
     posY.value = nextY;
-    runOnJS(updateSelectedColor)(nextX / PICKER_SIZE, nextY / PICKER_SIZE);
+
+    const nx = nextX / PICKER_SIZE;
+    const ny = nextY / PICKER_SIZE;
+    runOnJS(updateSelectedColor)(nx, ny);
+
+    const name = colorNameForHue(hueAt(nx, ny));
+    if (name !== lastColorName.value) {
+      lastColorName.value = name;
+      runOnJS(updateSelectedName)(name);
+    }
   });
 
   const cursorStyle = useAnimatedStyle(() => ({
@@ -84,29 +167,29 @@ export default function SoulColourScreen() {
     if (!hasInteracted) return;
     router.push({
       pathname: '/(auth)/soul-colour-answer',
-      params: { color: selected.hex, colorName: DEFAULT_NAME },
+      params: { color: selected.hex, colorName: selectedName },
     });
   };
 
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/soulcolor-1.3/Ellipse 31.png')}
+        source={require('@/assets/1.3-soulcolor/Ellipse 31.png')}
         style={[styles.blob, styles.blobBottomLeft]}
         resizeMode="contain"
       />
       <Image
-        source={require('@/assets/soulcolor-1.3/Ellipse 32.png')}
+        source={require('@/assets/1.3-soulcolor/Ellipse 32.png')}
         style={[styles.blob, styles.blobBottomCenter]}
         resizeMode="contain"
       />
       <Image
-        source={require('@/assets/soulcolor-1.3/Ellipse 33.png')}
+        source={require('@/assets/1.3-soulcolor/Ellipse 33.png')}
         style={[styles.blob, styles.blobRight]}
         resizeMode="contain"
       />
       <Image
-        source={require('@/assets/soulcolor-1.3/Ellipse 34.png')}
+        source={require('@/assets/1.3-soulcolor/Ellipse 34.png')}
         style={[styles.blob, styles.blobTopRight]}
         resizeMode="contain"
       />
@@ -119,13 +202,21 @@ export default function SoulColourScreen() {
       <View style={styles.pickerWrap}>
         <GestureDetector gesture={pan}>
           <View style={{ width: PICKER_SIZE, height: PICKER_SIZE }}>
-            <Animated.View style={[styles.swatch, cursorStyle]}>
-              <LinearGradient
-                colors={[lightenHex(selected.r, selected.g, selected.b), selected.hex]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={styles.swatchFill}
-              />
+            <Animated.View
+              style={[
+                styles.swatch,
+                cursorStyle,
+                { borderColor: selected.hex, shadowColor: selected.hex },
+              ]}
+            >
+              <View style={styles.swatchClip}>
+                <LinearGradient
+                  colors={[lightenHex(selected.r, selected.g, selected.b), selected.hex]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={styles.swatchFill}
+                />
+              </View>
             </Animated.View>
           </View>
         </GestureDetector>
@@ -140,7 +231,7 @@ export default function SoulColourScreen() {
         <Text style={[styles.okayText, !hasInteracted && styles.okayTextDisabled]}>okay</Text>
       </TouchableOpacity>
 
-      <Text style={styles.colorName}>{DEFAULT_NAME}</Text>
+      <Text style={styles.colorName}>{selectedName}</Text>
     </View>
   );
 }
@@ -206,6 +297,15 @@ const styles = StyleSheet.create({
     borderRadius: SWATCH_SIZE / 2,
     borderWidth: 2,
     borderColor: '#BCB4B4',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.55,
+    shadowRadius: 14,
+    elevation: 10,
+  },
+  swatchClip: {
+    width: '100%',
+    height: '100%',
+    borderRadius: SWATCH_SIZE / 2,
     overflow: 'hidden',
   },
   swatchFill: {

@@ -16,10 +16,7 @@ export default function SoulColourAnswerScreen() {
   const selectedName = colorName || DEFAULT_NAME;
 
   const handleContinue = () => {
-    // "Choose Name / Zora setup" (next in the planned sequence) doesn't exist yet, so this
-    // provisionally continues into the existing post-auth onboarding entry point. Not wired into
-    // RouteGuard/AuthContext - this screen isn't part of the automatic auth flow yet either.
-    router.push('/(auth)/profile-setup');
+    router.push('/(auth)/zora-choose-name');
   };
 
   return (

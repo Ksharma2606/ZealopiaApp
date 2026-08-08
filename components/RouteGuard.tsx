@@ -25,7 +25,7 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (!segments || segments.length === 0) {
+    if (!segments || !segments.length) {
       return;
     }
 
@@ -51,13 +51,15 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     if (!isSignupComplete) {
       // 'soul-colour'/'soul-colour-answer' added so these screens are reachable during onboarding -
       // they're UI-only for now (see progress log), not yet wired into the automatic redirect below.
-      const onboardingScreens = ['profile-setup', 'zora-intro', 'soul-colour', 'soul-colour-answer'];
+      // 'zora-choose-name'/'zora-message' added for the same reason (see progress log) - 'zora-message'
+      // is currently a placeholder for the not-yet-built Figma 1.6 screen.
+      const onboardingScreens = ['profile-setup', 'zora-intro', 'soul-colour', 'soul-colour-answer', 'zora-choose-name', 'zora-message'];
 
       if (inAuthGroup && currentScreen && onboardingScreens.includes(currentScreen)) {
         return;
       }
 
-      router.replace('/profile-setup');
+      router.replace('/soul-colour');
       return;
     }
 
